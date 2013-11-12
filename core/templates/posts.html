@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content%}
+<div class="top-content">
+	<a href="{{ url }}" class="login">{{ url_linktext }}</a>
+
+	{%if user %}
+	<div class="new-post">
+	<h2>Add new post:</h2>
+	<form action="/post/add/" method="post" >
+		{% csrf_token %}
+		{{form.as_p}}
+		<div><input type="submit" value="Add"></div>
+	</form>
+	</div>
+	{%endif%}
+</div>
+
+<div class="content">
+	{% if posts.count > 0 %}
+	    <h1>Posts</h1>
+	    
+	    {% for post in posts%}
+	    <div class="post">
+		{%if user %}<a href="{% url delete_post post.key %}" class="delete-post">X</a>{%endif%}
+		{{post.title}}
+		<p>
+			{{post.body|linebreaksbr}}
+		</p>
+		<span class="post-author">Author:</span><span class="post-creator">{{post.creator}}</span>
+		<span class="post-published">Published:</span><span class="post-date">{{post.created_at}}</span>
+		{%if user %}<a href="{% url edit_post post.key %}">Edit</a>{%endif%}
+	    </div>
+	    {%endfor%}
+	    
+	{% else %}
+	    <p>No posts yet..</p>
+	{% endif %}
+</div>
+{%endblock%}
